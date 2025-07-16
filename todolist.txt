@@ -1,0 +1,4 @@
+TO-DO LIST:
+
+Visuals:
+- Implement Tiles of the same type but different visual qualities
