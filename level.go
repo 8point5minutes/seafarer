@@ -6,6 +6,7 @@ import (
 
 type Level struct {
 	Tiles []*MapTile
+	Wind  Wind
 }
 
 func NewLevel() Level {
@@ -33,6 +34,7 @@ func (level *Level) CreateTiles() []*MapTile {
 	sea := NewTileType(true)
 	sea.NewImage("sea1.png")
 	sea.NewImage("sea2.png")
+	sea.NewImage("sea3.png")
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			tile := NewTile(x*gd.TileHeight, y*gd.TileWidth, sea)
