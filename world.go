@@ -6,7 +6,7 @@ type World struct {
 }
 
 func NewWorld() *World {
-	wind := Wind{windSpeed: 2, windDirection: 0}
+	wind := Wind{windSpeed: GetDiceRoll(5), windDirection: GetRandomInt(8)}
 	w := &World{CurrentWind: wind, CurrentLevel: NewLevel()}
 	w.CurrentWind.DisplayWind()
 	return w

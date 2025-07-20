@@ -44,13 +44,13 @@ func SailNE(world *World, actor *Actor) bool {
 	if world.CurrentWind.Direction() == "W" || world.CurrentWind.Direction() == "S" {
 		//can't sail into upwind so we don't even consider it
 		//broad reach (45 degree to the back) is at +1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed+1)/2, 1)
+		speed = (world.CurrentWind.windSpeed/2 + 1)
 	} else if world.CurrentWind.Direction() == "SE" || world.CurrentWind.Direction() == "NW" {
 		//beam reach (wind perpendicular) are at wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed)/2, 1)
+		speed = (world.CurrentWind.windSpeed) / 2
 	} else if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "E" || world.CurrentWind.Direction() == "SW" {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed-1)/2, 1)
+		speed = (world.CurrentWind.windSpeed - 1) / 2
 
 	}
 	actor.Y = MaxValue(actor.Y-speed, 0)
@@ -78,14 +78,14 @@ func SailE(world *World, actor *Actor) bool {
 func SailS(world *World, actor *Actor) bool {
 	gd := NewGameData()
 	speed := 0
-	if world.CurrentWind.Direction() == "SW" || world.CurrentWind.Direction() == "SE" {
+	if world.CurrentWind.Direction() == "NW" || world.CurrentWind.Direction() == "NE" {
 		//can't sail into upwind so we don't even consider it
 		//broad reach (45 degree to the back) is at +1 versus wind speed
 		speed = (world.CurrentWind.windSpeed + 1)
 	} else if world.CurrentWind.Direction() == "E" || world.CurrentWind.Direction() == "W" {
 		//beam reach (wind perpendicular) are at wind speed
 		speed = world.CurrentWind.windSpeed
-	} else if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "NW" || world.CurrentWind.Direction() == "NE" {
+	} else if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "SW" || world.CurrentWind.Direction() == "SE" {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1)
 	}
@@ -99,16 +99,16 @@ func SailSE(world *World, actor *Actor) bool {
 	if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "W" {
 		//can't sail into upwind so we don't even consider it
 		//broad reach (45 degree to the back) is at +1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed+1)/2, 1)
+		speed = (world.CurrentWind.windSpeed)/2 + 1
 	} else if world.CurrentWind.Direction() == "NE" || world.CurrentWind.Direction() == "SW" {
 		//beam reach (wind perpendicular) are at wind speed
-		speed = MaxValue(world.CurrentWind.windSpeed/2, 1)
+		speed = world.CurrentWind.windSpeed / 2
 	} else if world.CurrentWind.Direction() == "S" || world.CurrentWind.Direction() == "NW" || world.CurrentWind.Direction() == "E" {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed-1)/2, 1)
+		speed = (world.CurrentWind.windSpeed - 1) / 2
 	}
-	actor.X = MinValue(actor.X+speed, gd.ScreenHeight-1)
-	actor.Y = MinValue(actor.Y+speed, gd.ScreenWidth-1)
+	actor.X = MinValue(actor.X+speed, gd.ScreenWidth-1)
+	actor.Y = MinValue(actor.Y+speed, gd.ScreenHeight-1)
 	return true
 }
 
@@ -118,13 +118,13 @@ func SailSW(world *World, actor *Actor) bool {
 	if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "E" {
 		//can't sail into upwind so we don't even consider it
 		//broad reach (45 degree to the back) is at +1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed+1)/2, 1)
+		speed = world.CurrentWind.windSpeed/2 + 1
 	} else if world.CurrentWind.Direction() == "SE" || world.CurrentWind.Direction() == "NW" {
 		//beam reach (wind perpendicular) are at wind speed
-		speed = MaxValue(world.CurrentWind.windSpeed/2, 1)
+		speed = world.CurrentWind.windSpeed / 2
 	} else if world.CurrentWind.Direction() == "S" || world.CurrentWind.Direction() == "NE" || world.CurrentWind.Direction() == "W" {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed-1)/2, 1)
+		speed = (world.CurrentWind.windSpeed - 1) / 2
 	}
 	actor.X = MaxValue(actor.X-speed, 0)
 	actor.Y = MinValue(actor.Y+speed, gd.ScreenHeight-1)
@@ -153,13 +153,13 @@ func SailNW(world *World, actor *Actor) bool {
 	if world.CurrentWind.Direction() == "E" || world.CurrentWind.Direction() == "S" {
 		//can't sail into upwind so we don't even consider it
 		//broad reach (45 degree to the back) is at +1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed+1)/2, 1)
+		speed = (world.CurrentWind.windSpeed)/2 + 1
 	} else if world.CurrentWind.Direction() == "NE" || world.CurrentWind.Direction() == "SW" {
 		//beam reach (wind perpendicular) are at wind speed
-		speed = MaxValue(world.CurrentWind.windSpeed/2, 1)
+		speed = world.CurrentWind.windSpeed / 2
 	} else if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "SE" || world.CurrentWind.Direction() == "W" {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
-		speed = MaxValue((world.CurrentWind.windSpeed-1)/2, 1)
+		speed = (world.CurrentWind.windSpeed - 1) / 2
 	}
 	actor.X = MaxValue(actor.X-speed, 0)
 	actor.Y = MaxValue(actor.Y-speed, 0)

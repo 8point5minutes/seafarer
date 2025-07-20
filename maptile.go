@@ -16,12 +16,13 @@ func ImageFromPath(imagePath string) *ebiten.Image {
 }
 
 type TileType struct {
+	Name      string
 	Navigable bool
 	Images    []*ebiten.Image
 }
 
-func NewTileType(navigable bool) TileType {
-	tileType := TileType{Navigable: navigable, Images: make([]*ebiten.Image, 0)}
+func NewTileType(name string, navigable bool) TileType {
+	tileType := TileType{Name: name, Navigable: navigable, Images: make([]*ebiten.Image, 0)}
 	return tileType
 }
 
@@ -47,4 +48,9 @@ func (t *MapTile) RandomizeTypeIndex() {
 
 func (t *MapTile) Image() *ebiten.Image {
 	return t.Type.Images[t.TypeImageIndex]
+}
+
+func (t *MapTile) SetTileType(newType TileType) {
+	t.Type = newType
+	t.TypeImageIndex = 0
 }

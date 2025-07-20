@@ -9,8 +9,8 @@ type GameData struct {
 
 func NewGameData() GameData {
 	g := GameData{
-		ScreenWidth:  40,
-		ScreenHeight: 30,
+		ScreenWidth:  30,
+		ScreenHeight: 20,
 		TileWidth:    16,
 		TileHeight:   16,
 	}

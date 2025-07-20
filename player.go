@@ -18,6 +18,6 @@ func NewPlayer(name string) *Player {
 func (player *Player) PlayerRender(screen *ebiten.Image) {
 	gd := NewGameData()
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(player.X*gd.TileHeight), float64(player.Y*gd.TileWidth))
+	op.GeoM.Translate(float64(player.X*gd.TileWidth), float64(player.Y*gd.TileHeight))
 	screen.DrawImage(player.Ship.Type.Model, op)
 }

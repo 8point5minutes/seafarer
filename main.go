@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image/color"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -29,6 +30,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	w := g.world
 	p := g.player
+	screen.Fill(color.NRGBA{0x60, 0x30, 0x00, 0xff})
 	w.CurrentLevel.DrawLevel(screen)
 	p.PlayerRender(screen)
 }
