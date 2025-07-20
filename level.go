@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -98,7 +98,6 @@ func (level *Level) CreateTiles() []*MapTile {
 				}
 			}
 			if zone_type == 2 {
-				print("big island!")
 				//create small voronoi map by placing 5 points
 				voronoiPointsMap := make([]*VoronoiTile, 0)
 				for a := 0; a < 5; a++ {
@@ -119,7 +118,6 @@ func (level *Level) CreateTiles() []*MapTile {
 						nearest_closest_distance := 999999
 						for _, voronoiPoint := range voronoiPointsMap {
 							if PythagoreanDistance(voronoiPoint.tile, current_tile) < nearest_closest_distance {
-								fmt.Println(nearest_closest_distance)
 								nearest_closest_distance = PythagoreanDistance(voronoiPoint.tile, current_tile)
 								nearest_point = voronoiPoint.zone
 							}
@@ -128,9 +126,24 @@ func (level *Level) CreateTiles() []*MapTile {
 						voronoiMap = append(voronoiMap, voronoiTile)
 					}
 				}
+				//selecting the central voronoi zone to make it all into grass
 				for _, voronoiTile := range voronoiMap {
 					if voronoiTile.zone == 4 {
 						voronoiTile.tile.SetTileType(grass)
+					}
+				}
+			}
+		}
+	}
+	//making the adjacent tiles look like shallow water
+	for x := 0; x < gd.ScreenWidth; x++ {
+		for y := 0; y < gd.ScreenHeight; y++ {
+			current_tile := GetTileFromIndex(x, y, tiles)
+			if current_tile.Type.Name == "grass" {
+				adj_tiles := GetAdjacentTiles(x, y, tiles)
+				for _, adj_tile := range adj_tiles {
+					if adj_tile.Type.Name == "sea" {
+						adj_tile.TypeImageIndex = 1
 					}
 				}
 			}
