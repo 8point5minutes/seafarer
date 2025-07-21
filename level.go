@@ -39,7 +39,7 @@ func GetAdjacentTiles(x int, y int, level []*MapTile) []*MapTile {
 	tiles := make([]*MapTile, 0)
 	for i := -1; i < 2; i++ {
 		for j := -1; j < 2; j++ {
-			if !(x+i < 0) && !(y+j < 0) && !(y+j == gd.ScreenHeight) && !(y+j == gd.ScreenWidth) && !(j == 0 && i == 0) {
+			if !(x+i < 0) && !(y+j < 0) && !(y+j >= gd.ScreenHeight) && !(y+j >= gd.ScreenWidth) && !(j == 0 && i == 0) {
 				tiles = append(tiles, GetTileFromIndex(x+i, y+j, level))
 			}
 		}
@@ -106,6 +106,16 @@ func (level *Level) CreateTiles() []*MapTile {
 					voronoiTile := &VoronoiTile{tile: GetTileFromIndex(random_x, random_y, tiles), zone: a}
 					voronoiPointsMap = append(voronoiPointsMap, voronoiTile)
 				}
+				//determining central voronoi zone
+				central_voronoi_zone := 0
+				current_max_distance := 99999
+				for _, point := range voronoiPointsMap {
+					distance_to_center := PythagoreanDistance(point.tile, GetTileFromIndex(zone_size/2+i*zone_size, zone_size/2+j*zone_size, tiles))
+					if distance_to_center < current_max_distance {
+						central_voronoi_zone = point.zone
+						current_max_distance = distance_to_center
+					}
+				}
 				//measure the distance and apply
 				voronoiMap := make([]*VoronoiTile, 0)
 				for x := 0; x < zone_size; x++ {
@@ -126,9 +136,10 @@ func (level *Level) CreateTiles() []*MapTile {
 						voronoiMap = append(voronoiMap, voronoiTile)
 					}
 				}
+
 				//selecting the central voronoi zone to make it all into grass
 				for _, voronoiTile := range voronoiMap {
-					if voronoiTile.zone == 4 {
+					if voronoiTile.zone == central_voronoi_zone {
 						voronoiTile.tile.SetTileType(grass)
 					}
 				}
