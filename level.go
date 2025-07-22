@@ -39,7 +39,7 @@ func GetAdjacentTiles(x int, y int, level []*MapTile) []*MapTile {
 	tiles := make([]*MapTile, 0)
 	for i := -1; i < 2; i++ {
 		for j := -1; j < 2; j++ {
-			if !(x+i < 0) && !(y+j < 0) && !(y+j >= gd.ScreenHeight) && !(y+j >= gd.ScreenWidth) && !(j == 0 && i == 0) {
+			if !(x+i < 0) && !(y+j < 0) && !(x+i >= gd.ScreenWidth) && !(y+j >= gd.ScreenHeight) && !(j == 0 && i == 0) {
 				tiles = append(tiles, GetTileFromIndex(x+i, y+j, level))
 			}
 		}
@@ -65,9 +65,9 @@ func (level *Level) CreateTiles() []*MapTile {
 	sea := NewTileType("sea", true)
 	island := NewTileType("island", true)
 	grass := NewTileType("grass", true)
-	sea.NewImage("sea.png")
-	sea.NewImage("sea_dither_2.png")
-	island.NewImage("island1.png")
+	sea.NewImage("sea_dither_5.png")
+	sea.NewImage("sea_dither_3.png")
+	island.NewImage("island_3.png")
 	grass.NewImage("grass.png")
 	//seed the entire map with sea
 	for x := 0; x < gd.ScreenWidth; x++ {
