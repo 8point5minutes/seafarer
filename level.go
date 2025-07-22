@@ -61,14 +61,13 @@ func PythagoreanDistance(presentTile *MapTile, targetTile *MapTile) int {
 func (level *Level) CreateTiles() []*MapTile {
 	gd := NewGameData()
 	tiles := make([]*MapTile, 0)
-	//grass := NewTileType(false, "grass.png")
 	sea := NewTileType("sea", true)
 	island := NewTileType("island", true)
 	grass := NewTileType("grass", true)
-	sea.NewImage("sea_dither_5.png")
-	sea.NewImage("sea_dither_3.png")
-	island.NewImage("island_3.png")
-	grass.NewImage("grass.png")
+	sea.NewImage("assets/sea_dither_5.png")
+	sea.NewImage("assets/sea_dither_3.png")
+	island.NewImage("assets/island_3.png")
+	grass.NewImage("assets/grass.png")
 	//seed the entire map with sea
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {

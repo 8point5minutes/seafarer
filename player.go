@@ -11,7 +11,7 @@ type Player struct {
 }
 
 func NewPlayer(name string) *Player {
-	st := NewShipType("Carrack", "carrack.png")
+	st := NewShipType("Carrack", "assets/carrack.png")
 	p := &Player{Name: name, Ship: NewShip("Terrible", st), Actor: NewActor()}
 	return p
 }
