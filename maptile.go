@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -30,6 +31,13 @@ func (tt *TileType) NewImage(imagePath string) {
 	tt.Images = append(tt.Images, ImageFromPath(imagePath))
 }
 
+func (tt *TileType) LoadVariations(imagePath string, num_variations int) {
+	for x := 0; x < num_variations; x++ {
+		FilePath := imagePath + strconv.Itoa(x) + ".png"
+		tt.Images = append(tt.Images, ImageFromPath(FilePath))
+	}
+}
+
 type MapTile struct {
 	PixelX         int
 	PixelY         int
@@ -42,7 +50,7 @@ func NewTile(x int, y int, tileType TileType) *MapTile {
 	return t
 }
 
-func (t *MapTile) RandomizeTypeIndex() {
+func (t *MapTile) RandomizeImageIndex() {
 	t.TypeImageIndex = GetRandomInt(len(t.Type.Images))
 }
 

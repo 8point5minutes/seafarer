@@ -1,8 +1,9 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -47,6 +48,34 @@ func GetAdjacentTiles(x int, y int, level []*MapTile) []*MapTile {
 	return tiles
 }
 
+func CountNumAdjTilesWithType(x int, y int, level []*MapTile, tileType TileType) int {
+	gd := NewGameData()
+	tileBit := ""
+
+	for i := -1; i < 2; i++ {
+		for j := -1; j < 2; j++ {
+			if !(j == 0 && i == 0) {
+				if x+j < 0 || y+i < 0 || x+j >= gd.ScreenWidth || y+i >= gd.ScreenHeight {
+					tileBit += "0"
+				} else {
+					currentTile := GetTileFromIndex(x+j, y+i, level)
+					if currentTile.Type.Name == tileType.Name {
+						tileBit += "1"
+					} else {
+						tileBit += "0"
+					}
+				}
+			}
+
+		}
+	}
+	tileNum, err := strconv.ParseInt(tileBit, 2, 0)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return int(tileNum)
+}
+
 type VoronoiTile struct {
 	tile *MapTile
 	zone int
@@ -67,7 +96,7 @@ func (level *Level) CreateTiles() []*MapTile {
 	sea.NewImage("assets/sea_dither_5.png")
 	sea.NewImage("assets/sea_dither_3.png")
 	island.NewImage("assets/island_3.png")
-	grass.NewImage("assets/grass.png")
+	grass.LoadVariations("assets/grass/grass_", 256)
 	//seed the entire map with sea
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
@@ -87,7 +116,7 @@ func (level *Level) CreateTiles() []*MapTile {
 				for a := 0; a < num_islands; a++ {
 					random_x := GetRandomInt(zone_size-2) + 1 + i*zone_size
 					random_y := GetRandomInt(zone_size-2) + 1 + j*zone_size
-					SetTile(random_x, random_y, tiles, island)
+					SetTile(random_x, random_y, tiles, grass)
 					adj_tiles := GetAdjacentTiles(random_x, random_y, tiles)
 					for _, adj_tile := range adj_tiles {
 						if adj_tile.Type.Name == "sea" {
@@ -145,7 +174,9 @@ func (level *Level) CreateTiles() []*MapTile {
 			}
 		}
 	}
-	//making the adjacent tiles look like shallow water
+	//making the tiles adjacent to grass look like shallow water
+	//and also making the grass have a shore effect
+	//also place cities
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			current_tile := GetTileFromIndex(x, y, tiles)
@@ -156,6 +187,11 @@ func (level *Level) CreateTiles() []*MapTile {
 						adj_tile.TypeImageIndex = 1
 					}
 				}
+				adj_binary_num := CountNumAdjTilesWithType(x, y, tiles, sea)
+				current_tile.TypeImageIndex = adj_binary_num
+				/*if adj_binary_num > 0 {
+
+				}*/
 			}
 		}
 	}
