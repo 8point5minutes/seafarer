@@ -21,7 +21,7 @@ func NewGame() *Game {
 func (g *Game) Update() error {
 	p := g.player
 	p.HandleInput()
-	g.player.CurrentAction(g.world, p.Actor)
+	g.player.CurrentAction(p)(g.world)
 
 	return nil
 }

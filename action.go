@@ -1,27 +1,23 @@
 package main
 
-type Action func(world *World, actor *Actor) (turnOver bool)
-
-type Actor struct {
-	CurrentAction Action
-	X             int
-	Y             int
+type Actor interface {
+	noAction(*World) bool
+	sailN(*World) bool
+	sailNW(*World) bool
+	sailNE(*World) bool
+	sailE(*World) bool
+	sailW(*World) bool
+	sailSE(*World) bool
+	sailSW(*World) bool
+	sailS(*World) bool
 }
 
-func NewActor() *Actor {
-	a := &Actor{CurrentAction: NoAction, X: 5, Y: 5}
-	return a
-}
-
-func (actor *Actor) SetAction(newAction Action) {
-	actor.CurrentAction = newAction
-}
-
-func NoAction(world *World, actor *Actor) bool {
+func (p *Player) noAction(world *World) bool {
 	return false
 }
+func NoAction(i Actor) func(*World) bool { return i.noAction }
 
-func SailN(world *World, actor *Actor) bool {
+func (s *Ship) sailN(world *World) bool {
 	speed := 0
 	if world.CurrentWind.Direction() == "SW" || world.CurrentWind.Direction() == "SE" {
 		//can't sail into upwind so we don't even consider it
@@ -34,11 +30,13 @@ func SailN(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1)
 	}
-	actor.Y = MaxValue(actor.Y-speed, 0)
+	s.Y = MaxValue(s.Y-speed, 0)
 	return true
 }
 
-func SailNE(world *World, actor *Actor) bool {
+func SailN(i Actor) func(*World) bool { return i.sailN }
+
+func (s *Ship) sailNE(world *World) bool {
 	gd := NewGameData()
 	speed := 0
 	if world.CurrentWind.Direction() == "W" || world.CurrentWind.Direction() == "S" {
@@ -53,12 +51,14 @@ func SailNE(world *World, actor *Actor) bool {
 		speed = (world.CurrentWind.windSpeed - 1) / 2
 
 	}
-	actor.Y = MaxValue(actor.Y-speed, 0)
-	actor.X = MinValue(actor.X+speed, gd.ScreenWidth-1)
+	s.Y = MaxValue(s.Y-speed, 0)
+	s.X = MinValue(s.X+speed, gd.ScreenWidth-1)
 	return true
 }
 
-func SailE(world *World, actor *Actor) bool {
+func SailNE(i Actor) func(*World) bool { return i.sailNE }
+
+func (s *Ship) sailE(world *World) bool {
 	gd := NewGameData()
 	speed := 0
 	if world.CurrentWind.Direction() == "NW" || world.CurrentWind.Direction() == "SW" {
@@ -72,10 +72,13 @@ func SailE(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1)
 	}
-	actor.X = MinValue(actor.X+speed, gd.ScreenWidth-1)
+	s.X = MinValue(s.X+speed, gd.ScreenWidth-1)
 	return true
 }
-func SailS(world *World, actor *Actor) bool {
+
+func SailE(i Actor) func(*World) bool { return i.sailE }
+
+func (p *Player) sailS(world *World) bool {
 	gd := NewGameData()
 	speed := 0
 	if world.CurrentWind.Direction() == "NW" || world.CurrentWind.Direction() == "NE" {
@@ -89,11 +92,12 @@ func SailS(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1)
 	}
-	actor.Y = MinValue(actor.Y+speed, gd.ScreenHeight-1)
+	p.Y = MinValue(p.Y+speed, gd.ScreenHeight-1)
 	return true
-
 }
-func SailSE(world *World, actor *Actor) bool {
+func SailS(i Actor) func(*World) bool { return i.sailS }
+
+func (s *Ship) sailSE(world *World) bool {
 	gd := NewGameData()
 	speed := 0
 	if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "W" {
@@ -107,12 +111,13 @@ func SailSE(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1) / 2
 	}
-	actor.X = MinValue(actor.X+speed, gd.ScreenWidth-1)
-	actor.Y = MinValue(actor.Y+speed, gd.ScreenHeight-1)
+	s.X = MinValue(s.X+speed, gd.ScreenWidth-1)
+	s.Y = MinValue(s.Y+speed, gd.ScreenHeight-1)
 	return true
 }
+func SailSE(i Actor) func(*World) bool { return i.sailSE }
 
-func SailSW(world *World, actor *Actor) bool {
+func (s *Ship) sailSW(world *World) bool {
 	gd := NewGameData()
 	speed := 0
 	if world.CurrentWind.Direction() == "N" || world.CurrentWind.Direction() == "E" {
@@ -126,12 +131,13 @@ func SailSW(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1) / 2
 	}
-	actor.X = MaxValue(actor.X-speed, 0)
-	actor.Y = MinValue(actor.Y+speed, gd.ScreenHeight-1)
+	s.X = MaxValue(s.X-speed, 0)
+	s.Y = MinValue(s.Y+speed, gd.ScreenHeight-1)
 	return true
 }
+func SailSW(i Actor) func(*World) bool { return i.sailSW }
 
-func SailW(world *World, actor *Actor) bool {
+func (s *Ship) sailW(world *World) bool {
 	speed := 0
 	if world.CurrentWind.Direction() == "NE" || world.CurrentWind.Direction() == "SE" {
 		//can't sail into upwind so we don't even consider it
@@ -144,11 +150,12 @@ func SailW(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1)
 	}
-	actor.X = MaxValue(actor.X-speed, 0)
+	s.X = MaxValue(s.X-speed, 0)
 	return true
 }
+func SailW(i Actor) func(*World) bool { return i.sailW }
 
-func SailNW(world *World, actor *Actor) bool {
+func (s *Ship) sailNW(world *World) bool {
 	speed := 0
 	if world.CurrentWind.Direction() == "E" || world.CurrentWind.Direction() == "S" {
 		//can't sail into upwind so we don't even consider it
@@ -161,7 +168,8 @@ func SailNW(world *World, actor *Actor) bool {
 		//running (wind behind) or close haul (forward and to the side) is at -1 versus wind speed
 		speed = (world.CurrentWind.windSpeed - 1) / 2
 	}
-	actor.X = MaxValue(actor.X-speed, 0)
-	actor.Y = MaxValue(actor.Y-speed, 0)
+	s.X = MaxValue(s.X-speed, 0)
+	s.Y = MaxValue(s.Y-speed, 0)
 	return true
 }
+func SailNW(i Actor) func(*World) bool { return i.sailNW }
