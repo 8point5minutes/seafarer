@@ -10,10 +10,13 @@ import (
 type Game struct {
 	world  *World
 	player *Player
+	cities []*City
 }
 
 func NewGame() *Game {
-	g := &Game{world: NewWorld(), player: NewPlayer("Dread Pirate Roberts")}
+	g := &Game{world: NewWorld(), player: NewPlayer("Dread Pirate Roberts"), cities: make([]*City, 0)}
+	g.cities = append(g.cities, NewCity("Havana", ImageFromPath("assets/city_0.png")))
+	g.world.CurrentLevel.CreateCities(g.cities)
 	return g
 }
 
@@ -33,6 +36,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.NRGBA{0x60, 0x30, 0x00, 0xff})
 	w.CurrentLevel.DrawLevel(screen)
 	p.PlayerRender(screen)
+	for _, city := range g.cities {
+		city.CityRender(screen)
+	}
 }
 
 // Layout will return the screen dimensions.

@@ -43,10 +43,11 @@ type MapTile struct {
 	PixelY         int
 	TypeImageIndex int
 	Type           TileType
+	City           *City
 }
 
 func NewTile(x int, y int, tileType TileType) *MapTile {
-	t := &MapTile{PixelX: x, PixelY: y, TypeImageIndex: 0, Type: tileType}
+	t := &MapTile{PixelX: x, PixelY: y, TypeImageIndex: 0, Type: tileType, City: nil}
 	return t
 }
 
@@ -61,4 +62,12 @@ func (t *MapTile) Image() *ebiten.Image {
 func (t *MapTile) SetTileType(newType TileType) {
 	t.Type = newType
 	t.TypeImageIndex = 0
+}
+
+func (t *MapTile) HasCity() bool {
+	return t.City != nil
+}
+
+func (t *MapTile) SetCity(city *City) {
+	t.City = city
 }

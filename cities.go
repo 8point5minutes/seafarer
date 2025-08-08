@@ -8,42 +8,22 @@ type City struct {
 	Name   string
 	X      int
 	Y      int
-	Images []*ebiten.Image
+	Sprite *ebiten.Image
 }
 
-/*
-
-REFERENCE CODE FOR REWORK
-
-// You can edit this code!
-// Click here and start typing.
-package main
-
-import "fmt"
-
-type geometry interface {
-	area() float64
-	perim() float64
+func NewCity(cityName string, sprite *ebiten.Image) *City {
+	c := &City{Name: cityName, X: 0, Y: 0, Sprite: sprite}
+	return c
 }
 
-type rect struct {
-	width, height float64
-	currentCalc   func() func(rect) float64
+func (c *City) SetCityPos(x int, y int) {
+	c.X = x
+	c.Y = y
 }
 
-func (r rect) area() float64 {
-	return r.width * r.height
+func (c *City) CityRender(screen *ebiten.Image) {
+	gd := NewGameData()
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(c.X*gd.TileWidth), float64(c.Y*gd.TileHeight))
+	screen.DrawImage(c.Sprite, op)
 }
-
-func (r rect) perim() float64 {
-	return 2*r.width + 2*r.height
-}
-
-func areaCalc() func(rect) float64  { return rect.area }
-func perimCalc() func(rect) float64 { return rect.perim }
-
-func main() {
-	r := rect{width: 3, height: 4, currentCalc: perimCalc}
-	fmt.Println(r.currentCalc()(r))
-}
-*/

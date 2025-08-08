@@ -48,7 +48,7 @@ func GetAdjacentTiles(x int, y int, level []*MapTile) []*MapTile {
 	return tiles
 }
 
-func CountNumAdjTilesWithType(x int, y int, level []*MapTile, tileType TileType) int {
+func CountNumAdjTilesWithType(x int, y int, level []*MapTile, tileType string) int {
 	gd := NewGameData()
 	tileBit := ""
 
@@ -59,7 +59,7 @@ func CountNumAdjTilesWithType(x int, y int, level []*MapTile, tileType TileType)
 					tileBit += "0"
 				} else {
 					currentTile := GetTileFromIndex(x+j, y+i, level)
-					if currentTile.Type.Name == tileType.Name {
+					if currentTile.Type.Name == tileType {
 						tileBit += "1"
 					} else {
 						tileBit += "0"
@@ -100,7 +100,7 @@ func (level *Level) CreateTiles() []*MapTile {
 	//seed the entire map with sea
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
-			tile := NewTile(x*gd.TileWidth, y*gd.TileHeight, sea)
+			tile := NewTile(x, y, sea)
 			tiles = append(tiles, tile)
 		}
 	}
@@ -187,7 +187,7 @@ func (level *Level) CreateTiles() []*MapTile {
 						adj_tile.TypeImageIndex = 1
 					}
 				}
-				adj_binary_num := CountNumAdjTilesWithType(x, y, tiles, sea)
+				adj_binary_num := CountNumAdjTilesWithType(x, y, tiles, "sea")
 				current_tile.TypeImageIndex = adj_binary_num
 				/*if adj_binary_num > 0 {
 
@@ -198,13 +198,31 @@ func (level *Level) CreateTiles() []*MapTile {
 	return tiles
 }
 
+func (level *Level) CreateCities(cityList []*City) {
+	gd := NewGameData()
+	for _, city := range cityList {
+		city_location_searching := true
+		for city_location_searching {
+			rand_x := GetRandomInt(gd.ScreenWidth)
+			rand_y := GetRandomInt(gd.ScreenHeight)
+			target_tile := GetTileFromIndex(rand_x, rand_y, level.Tiles)
+			num_adj_sea_tiles := CountNumAdjTilesWithType(rand_x, rand_y, level.Tiles, "sea")
+			if !target_tile.HasCity() && !(target_tile.Type.Name == "sea") && num_adj_sea_tiles > 0 {
+				target_tile.SetCity(city)
+				city.SetCityPos(rand_x, rand_y)
+				city_location_searching = false
+			}
+		}
+	}
+}
+
 func (level *Level) DrawLevel(screen *ebiten.Image) {
 	gd := NewGameData()
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			tile := GetTileFromIndex(x, y, level.Tiles)
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+			op.GeoM.Translate(float64(tile.PixelX*gd.TileWidth), float64(tile.PixelY*gd.TileWidth))
 			screen.DrawImage(tile.Image(), op)
 		}
 	}
